@@ -45,39 +45,33 @@ shake7 = Image("00000:"
                "00000")
 SHAKE_IMAGES = [shake0, shake1, shake2, shake3, shake4, shake5, shake6, shake7]
 
+happyUp = Image("00000:"
+                "09090:"
+                "00000:"
+                "90009:"
+                "09990")
+happyRight = Image("09000:"
+                   "90090:"
+                   "90000:"
+                   "90090:"
+                   "09000")
+happyDown = Image("09990:"
+                  "90009:"
+                  "00000:"
+                  "09090:"
+                  "00000")
+happyLeft = Image("00090:"
+                  "09009:"
+                  "00009:"
+                  "09009:"
+                  "00090")
+HAPPY_IMAGES = [happyUp, happyRight, happyDown, happyLeft]
+
 ARROW_WE_IMAGE = Image("09090:"
                        "66066:"
                        "99999:"
                        "66066:"
                        "09090")
-
-while True:
-  if CURRENT_LEVEL == 1:
-    display.scroll('1')
-    game_arrows()
-    CURRENT_LEVEL = CURRENT_LEVEL + 1
-
-  if CURRENT_LEVEL == 2:
-    display.scroll('2')
-    game_shake()
-    CURRENT_LEVEL = CURRENT_LEVEL + 1
-
-  if CURRENT_LEVEL == 3:
-    display.scroll('3')
-    game_collect()
-    CURRENT_LEVEL = CURRENT_LEVEL + 1
-
-  if CURRENT_LEVEL == 4:
-    display.scroll('4')
-    game_facedown()
-    CURRENT_LEVEL = CURRENT_LEVEL + 1
-
-  if CURRENT_LEVEL > 4:
-    while True:
-      display.scroll('NYERTÉL!!!')
-      display.show(Image.HAPPY)
-      sleep(2000)
-
 
 def game_shake():
   imageIndex = 0
@@ -85,7 +79,7 @@ def game_shake():
   while True:
     currentImage = SHAKE_IMAGES[imageIndex]
     display.show(currentImage)
-    sleep(100)
+    sleep(50)
     imageIndex = (imageIndex + 1) % imageNumber
     if accelerometer.was_gesture("shake"):
       return True
@@ -116,25 +110,23 @@ def game_arrows():
         break
 
 def game_facedown():
-  happyUp = Image("00000:"
-                  "09090:"
-                  "00000:"
-                  "90009:"
-                  "09990")
-  happyDown = Image("09990:"
-                    "90009:"
-                    "00000:"
-                    "09090:"
-                    "00000")
   happyImages = [happyUp, happyDown]
   imageIndex = 0
   imageNumber = len(happyImages)
+  time = 0
+  isDownDone = False
   while True:
-    currentImage = SHAKE_IMAGES[imageIndex]
+    time = (time + 1) % 1000
+    if time > 500:
+      imageIndex = 1
+    else:
+      imageIndex = 0
+    currentImage = happyImages[imageIndex]
     display.show(currentImage)
-    sleep(1000)
-    imageIndex = (imageIndex + 1) % imageNumber
-    if accelerometer.was_gesture("face down"):
+    gesture = accelerometer.current_gesture()
+    if gesture == "face down":
+      isDownDone = True
+    if isDownDone and gesture == "face up":
       return True
 
 def game_collect():
@@ -143,28 +135,32 @@ def game_collect():
            [0, 0, 0, 0, 5],
            [0, 5, 0, 5, 0],
            [0, 0, 5, 5, 0]]
-  currentPosition = [0, 0]  # column, row
+  currentPosition = [0, 0]  # row, column
   sleepIndex = 0
-  sleepMax = 500
+  sleepMax = 5
   while True:
     # Left-right
     leftIncrease = button_a.get_presses()
-    rightIncrease = button_a.get_presses()
-    currentPosition[0] = (currentPosition[0] - leftIncrease + rightIncrease) % 5
+    rightIncrease = button_b.get_presses()
+    currentPosition[1] = (currentPosition[1] - leftIncrease + rightIncrease) % 5
 
     # Down
     sleepIndex = sleepIndex + 1
     if sleepIndex == sleepMax:
-      currentPosition[1] = (currentPosition[1] + 1) % 5
+      currentPosition[0] = (currentPosition[0] + 1) % 5
       sleepIndex = 0
 
     # Collect points
-    level[currentPosition[0], currentPosition[1]] = 0
+    level[currentPosition[0]][currentPosition[1]] = 0
 
     # Render image
-    currentImageArray = level[:]
-    currentImageArray[currentPosition[0], currentPosition[1]] = 9
-    currentImage = microbit.Image(5, 5, currentImageArray)
+    # currentImageArray = map(lambda sublist: sublist[:], level)
+    currentImageArray = [sublist[:] for sublist in level]
+    currentImageArray[currentPosition[0]][currentPosition[1]] = 9
+    currentImageArrayWithStringEntries = map(lambda sublist: map(str, sublist), currentImageArray)
+    currentImageArrayWithStringRows = map(lambda sublist: ''.join(sublist), currentImageArrayWithStringEntries)
+    currentImageArrayWithStringMatrix = ':'.join(currentImageArrayWithStringRows)
+    currentImage = Image(currentImageArrayWithStringMatrix)
     display.show(currentImage)
 
     # Check if done
@@ -177,3 +173,31 @@ def game_collect():
     sleep(1)
 
     
+while True:    
+  if CURRENT_LEVEL == 1:
+    display.scroll('1')
+    game_arrows()
+    CURRENT_LEVEL = CURRENT_LEVEL + 1
+
+  if CURRENT_LEVEL == 2:
+    display.scroll('2')
+    game_shake()
+    CURRENT_LEVEL = CURRENT_LEVEL + 1
+
+  if CURRENT_LEVEL == 3:
+    display.scroll('3')
+    game_collect()
+    CURRENT_LEVEL = CURRENT_LEVEL + 1
+
+  if CURRENT_LEVEL == 4:
+    display.scroll('4')
+    game_facedown()
+    CURRENT_LEVEL = CURRENT_LEVEL + 1
+
+  if CURRENT_LEVEL > 4:
+    while True:
+      display.scroll('NYERTEL!!!')
+      display.show(HAPPY_IMAGES, delay=200)
+      display.show(HAPPY_IMAGES, delay=200)
+      display.show(HAPPY_IMAGES, delay=200)
+      # sleep(2000)
