@@ -122,9 +122,9 @@ def game_facedown():
     currentImage = happyImages[imageIndex]
     display.show(currentImage)
     gesture = accelerometer.current_gesture()
-    if gesture == "up":
+    if gesture == "down":
       isDownDone = True
-    if isDownDone and gesture == "down":
+    if isDownDone and gesture == "up":
       return True
 
 def game_collect():
