@@ -45,6 +45,28 @@ shake7 = Image("00000:"
                "00000")
 SHAKE_IMAGES = [shake0, shake1, shake2, shake3, shake4, shake5, shake6, shake7]
 
+happyUp = Image("00000:"
+                "09090:"
+                "00000:"
+                "90009:"
+                "09990")
+happyRight = Image("09000:"
+                   "90090:"
+                   "90000:"
+                   "90090:"
+                   "09000")
+happyDown = Image("09990:"
+                  "90009:"
+                  "00000:"
+                  "09090:"
+                  "00000")
+happyLeft = Image("00090:"
+                  "09009:"
+                  "00009:"
+                  "09009:"
+                  "00090")
+HAPPY_IMAGES = [happyUp, happyRight, happyDown, happyLeft]
+
 ARROW_WE_IMAGE = Image("09090:"
                        "66066:"
                        "99999:"
@@ -88,22 +110,6 @@ def game_arrows():
         break
 
 def game_facedown():
-#   while True:
-#     gesture = accelerometer.current_gesture()
-#     if gesture == "face up":
-#         display.show(Image.HAPPY)
-#     else:
-#         display.show(Image.ANGRY)
-  happyUp = Image("00000:"
-                  "09090:"
-                  "00000:"
-                  "90009:"
-                  "09990")
-  happyDown = Image("09990:"
-                    "90009:"
-                    "00000:"
-                    "09090:"
-                    "00000")
   happyImages = [happyUp, happyDown]
   imageIndex = 0
   imageNumber = len(happyImages)
@@ -122,10 +128,6 @@ def game_facedown():
       isDownDone = True
     if isDownDone and gesture == "face up":
       return True
-    # sleep(1000)
-    # imageIndex = (imageIndex + 1) % imageNumber
-    # if accelerometer.was_gesture("face down"):
-    #   return True
 
 def game_collect():
   level = [[0, 0, 0, 5, 0],
@@ -172,28 +174,39 @@ def game_collect():
 
     
 while True:    
+  display.scroll('Jatek indul!')
+
   if CURRENT_LEVEL == 1:
     display.scroll('1')
     game_arrows()
     CURRENT_LEVEL = CURRENT_LEVEL + 1
+    
+  display.scroll('Szep!')
 
   if CURRENT_LEVEL == 2:
     display.scroll('2')
     game_shake()
     CURRENT_LEVEL = CURRENT_LEVEL + 1
 
+  display.scroll('Szuper!')
+
   if CURRENT_LEVEL == 3:
     display.scroll('3')
     game_collect()
     CURRENT_LEVEL = CURRENT_LEVEL + 1
+
+  display.scroll('Wow!')
 
   if CURRENT_LEVEL == 4:
     display.scroll('4')
     game_facedown()
     CURRENT_LEVEL = CURRENT_LEVEL + 1
 
+  happyAnimation = []
+  happyAnimation.extend(HAPPY_IMAGES)
+  happyAnimation.extend(HAPPY_IMAGES)
+  happyAnimation.extend(HAPPY_IMAGES)
   if CURRENT_LEVEL > 4:
     while True:
-      display.scroll('NYERTÉL!!!')
-      display.show(Image.HAPPY)
-      sleep(2000)
+      display.scroll('NYERTEL!!!')
+      display.show(happyAnimation, 200)
