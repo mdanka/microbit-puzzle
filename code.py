@@ -1,8 +1,6 @@
 # Add your Python code here. E.g.
 from microbit import *
 
-CURRENT_LEVEL = 1
-
 shake0 = Image("00000:"
                "78900:"
                "78900:"
@@ -124,9 +122,9 @@ def game_facedown():
     currentImage = happyImages[imageIndex]
     display.show(currentImage)
     gesture = accelerometer.current_gesture()
-    if gesture == "face down":
+    if gesture == "up":
       isDownDone = True
-    if isDownDone and gesture == "face up":
+    if isDownDone and gesture == "down":
       return True
 
 def game_collect():
@@ -174,39 +172,27 @@ def game_collect():
 
     
 while True:    
-  display.scroll('Jatek indul!')
+  # display.scroll('Jatek indul!')
 
-  if CURRENT_LEVEL == 1:
-    display.scroll('1')
-    game_arrows()
-    CURRENT_LEVEL = CURRENT_LEVEL + 1
-    
-  display.scroll('Szep!')
+  display.scroll('1')
+  game_arrows()
+  # display.scroll('Szep!')
 
-  if CURRENT_LEVEL == 2:
-    display.scroll('2')
-    game_shake()
-    CURRENT_LEVEL = CURRENT_LEVEL + 1
+  display.scroll('2')
+  game_shake()
+  # display.scroll('Szuper!')
 
-  display.scroll('Szuper!')
+  display.scroll('3')
+  game_collect()
+  # display.scroll('Wow!')
 
-  if CURRENT_LEVEL == 3:
-    display.scroll('3')
-    game_collect()
-    CURRENT_LEVEL = CURRENT_LEVEL + 1
-
-  display.scroll('Wow!')
-
-  if CURRENT_LEVEL == 4:
-    display.scroll('4')
-    game_facedown()
-    CURRENT_LEVEL = CURRENT_LEVEL + 1
+  display.scroll('4')
+  game_facedown()
 
   happyAnimation = []
   happyAnimation.extend(HAPPY_IMAGES)
   happyAnimation.extend(HAPPY_IMAGES)
   happyAnimation.extend(HAPPY_IMAGES)
-  if CURRENT_LEVEL > 4:
-    while True:
-      display.scroll('NYERTEL!!!')
-      display.show(happyAnimation, 200)
+  while True:
+    display.scroll('NYERTEL!!!')
+    display.show(happyAnimation, 200)
