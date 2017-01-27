@@ -152,7 +152,6 @@ def game_collect():
     level[currentPosition[0]][currentPosition[1]] = 0
 
     # Render image
-    # currentImageArray = map(lambda sublist: sublist[:], level)
     currentImageArray = [sublist[:] for sublist in level]
     currentImageArray[currentPosition[0]][currentPosition[1]] = 9
     currentImageArrayWithStringEntries = map(lambda sublist: map(str, sublist), currentImageArray)
@@ -172,19 +171,14 @@ def game_collect():
 
     
 while True:    
-  # display.scroll('Jatek indul!')
-
   display.scroll('1')
   game_arrows()
-  # display.scroll('Szep!')
 
   display.scroll('2')
   game_shake()
-  # display.scroll('Szuper!')
 
   display.scroll('3')
   game_collect()
-  # display.scroll('Wow!')
 
   display.scroll('4')
   game_facedown()
