@@ -83,15 +83,15 @@ def game_shake():
       return True
 
 def game_arrows():
-  steps = ['left', 'right', 'left', 'left', 'both', 'right', 'both']
+  steps = ['l', 'r', 'l', 'l', 'b', 'r', 'b']
   stepIndex = 0
   stepNumber = len(steps)
   while stepIndex < stepNumber:
     currentStep = steps[stepIndex]
     currentImage = None
-    if currentStep == 'left':
+    if currentStep == 'l':
       currentImage = Image.ARROW_W
-    elif currentStep == 'right':
+    elif currentStep == 'r':
       currentImage = Image.ARROW_E
     else:
       currentImage = ARROW_WE_IMAGE
@@ -102,7 +102,7 @@ def game_arrows():
       leftPressedOnly = leftPressed and (not rightPressed)
       rightPressedOnly = (not leftPressed) and rightPressed
       bothPressed = leftPressed and rightPressed
-      correctPressed = (currentStep == 'left' and leftPressedOnly) or (currentStep == 'right' and rightPressedOnly) or (currentStep == 'both' and bothPressed)
+      correctPressed = (currentStep == 'l' and leftPressedOnly) or (currentStep == 'r' and rightPressedOnly) or (currentStep == 'b' and bothPressed)
       if correctPressed:
         stepIndex = stepIndex + 1
         break
@@ -114,8 +114,8 @@ def game_facedown():
   time = 0
   isDownDone = False
   while True:
-    time = (time + 1) % 1000
-    if time > 500:
+    time = (time + 1) % 2000
+    if time > 1000:
       imageIndex = 1
     else:
       imageIndex = 0
